@@ -12,29 +12,16 @@ struct ResultsView: View {
     @State private var restaurants: [Restaurant] = [] // Restaurants from API
     @State private var isLoading: Bool = true // Loading state
     @State private var errorMessage: String? = nil // Error handling
+    @Binding var navigateToResults: Bool // Control navigation behavior
 
     var body: some View {
         VStack {
-            // Logo at the top
+            // Logo
             Text("Cobalt")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .foregroundColor(Color.blue)
 
-            // Results Header
-            VStack(alignment: .leading) {
-                Text("Results")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .padding(.horizontal)
-
-                Divider()
-                    .background(Color.black)
-                    .padding(.horizontal)
-            }
-            .padding(.top)
-
-            // Results List
             if isLoading {
                 ProgressView("Loading...")
                     .padding()
@@ -43,6 +30,20 @@ struct ResultsView: View {
                     .foregroundColor(.red)
                     .padding()
             } else {
+                // Results Header
+                VStack(alignment: .leading) {
+                    Text("Results")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .padding(.horizontal)
+
+                    Divider()
+                        .background(Color.black)
+                        .padding(.horizontal)
+                }
+                .padding(.top)
+
+                // Results List
                 ScrollView {
                     VStack(spacing: 16) {
                         ForEach(filteredRestaurants) { restaurant in
@@ -65,34 +66,10 @@ struct ResultsView: View {
                     }
                 }
             }
-
-            // Bottom Navigation
-            HStack {
-                Button(action: {
-                    // Navigate to list view
-                }) {
-                    VStack {
-                        Image(systemName: "line.horizontal.3")
-                        Text("List")
-                            .font(.caption)
-                    }
-                }
-                .frame(maxWidth: .infinity)
-
-                Button(action: {
-                    // Navigate to map view
-                }) {
-                    VStack {
-                        Image(systemName: "mappin.circle")
-                        Text("Map")
-                            .font(.caption)
-                    }
-                }
-                .frame(maxWidth: .infinity)
-            }
-            .padding()
-            .background(Color.blue.opacity(0.1))
         }
+        .navigationTitle("Results")
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(false)
         .onAppear {
             fetchRestaurants()
         }
@@ -122,11 +99,10 @@ struct ResultsView: View {
         }
     }
 
-    
     func convertTimeStringToHours(_ time: String) -> Int {
         let formats = ["h:mm a", "h a"] // List of supported time formats
         let dateFormatter = DateFormatter()
-        
+
         for format in formats {
             dateFormatter.dateFormat = format
             if let date = dateFormatter.date(from: time) {
@@ -140,15 +116,11 @@ struct ResultsView: View {
         return 0
     }
 
-
     // Filtered Restaurants Based on Filters
     var filteredRestaurants: [Restaurant] {
         restaurants.filter { restaurant in
             // Check if any of the restaurant's happy hours match the selected days and time range
             restaurant.cobalt_apps.contains { happyHour in
-                // Debug: Log happy hour data and filter settings
-                print("Checking Happy Hour: \(happyHour.day) \(happyHour.start_time) - \(happyHour.end_time)")
-
                 // Check if the day matches the user's selected days
                 let matchesDay = filterSettings.selectedDays.isEmpty || filterSettings.selectedDays.contains(happyHour.day)
 
@@ -161,31 +133,15 @@ struct ResultsView: View {
                 // Check if the time ranges overlap
                 let matchesTime = (userStart == 0 && userEnd == 23) || (userStart < happyHourEnd && userEnd > happyHourStart)
 
-                // Debug: Log matching status
-                print("Matches Day: \(matchesDay), Matches Time: \(matchesTime)")
-
                 return matchesDay && matchesTime
             }
         }
     }
-
 }
 
-extension Restaurant {
-    // Check if the restaurant is available during the selected time range
-    func isAvailableDuring(start: String, end: String) -> Bool {
-        guard let startTime = Int(start.split(separator: " ")[0]),
-              let endTime = Int(end.split(separator: " ")[0]) else { return false }
-
-        for happyHour in cobalt_apps {
-            guard let hhStartTime = Int(happyHour.start_time.split(separator: ":")[0]),
-                  let hhEndTime = Int(happyHour.end_time.split(separator: ":")[0]) else { continue }
-
-            if hhStartTime <= startTime && hhEndTime >= endTime {
-                return true
-            }
-        }
-        return false
+struct ResultsView_Previews: PreviewProvider {
+    static var previews: some View {
+        ResultsView(navigateToResults: .constant(true))
+            .environmentObject(FilterSettings())
     }
 }
-

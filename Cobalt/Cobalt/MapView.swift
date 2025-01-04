@@ -19,11 +19,10 @@ struct MapView: View {
                 .foregroundColor(Color.blue)
 
             Spacer()
-            Text("In Progress...")
+            Text("Feature Coming Soon.")
                 .foregroundColor(.gray)
             Spacer()
         }
-        .withBottomMenuBar(selectedTab: $selectedTab) // Attach the consistent bottom menu bar
     }
 }
 

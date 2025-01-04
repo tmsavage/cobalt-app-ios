@@ -9,61 +9,63 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject var filterSettings: FilterSettings
-    @State private var restaurants: [Restaurant] = []
-    @State private var searchQuery: String = ""
-    @State private var navigateToResults: Bool = false
     @State private var selectedTab: BottomMenuBar.Tab = .list
+    @State private var searchQuery: String = ""
 
     var body: some View {
         NavigationStack {
             VStack {
-                // Logo
-                Text("Cobalt")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .foregroundColor(Color.blue)
+                if selectedTab == .list {
+                    // List View Content
+                    VStack {
+                        // Logo
+                        Text("Cobalt")
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                            .foregroundColor(Color.blue)
 
-                // Search Bar
-                HStack {
-                    TextField("Search by bar..", text: $searchQuery)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding(.leading)
+                        // Search Bar
+                        HStack {
+                            TextField("Search by bar..", text: $searchQuery)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                                .padding(.leading)
 
-                    NavigationLink(destination: FilterView().environmentObject(filterSettings)) {
-                        Image(systemName: "line.horizontal.3.decrease.circle")
-                            .resizable()
-                            .frame(width: 24, height: 24)
-                            .padding(.trailing)
-                    }
-                }
-                .padding()
-
-                // Search Button
-                Button(action: {
-                    navigateToResults = true
-                }) {
-                    Text("Search")
-                        .fontWeight(.semibold)
+                            NavigationLink(destination: FilterView().environmentObject(filterSettings)) {
+                                Image(systemName: "line.horizontal.3.decrease.circle")
+                                    .resizable()
+                                    .frame(width: 24, height: 24)
+                                    .padding(.trailing)
+                            }
+                        }
                         .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
-                        .padding(.horizontal)
-                }
-                .navigationDestination(isPresented: $navigateToResults) {
-                    ResultsView().environmentObject(filterSettings)
-                }
 
-                // Featured Bars
-                Text("Featured Bars")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .padding(.top)
+                        // Search Button
+                        NavigationLink(destination: ResultsView(navigateToResults: .constant(true))
+                                        .environmentObject(filterSettings)) {
+                            Text("Search")
+                                .fontWeight(.semibold)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(Color.blue)
+                                .foregroundColor(.white)
+                                .cornerRadius(8)
+                                .padding(.horizontal)
+                        }
 
-                Spacer()
+                        // Featured Bars
+                        Text("Featured Bars")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .padding(.top)
+
+                        Spacer()
+                    }
+                } else if selectedTab == .map {
+                    // Map View Content
+                    MapView(selectedTab: $selectedTab)
+                }
             }
-            .modifier(BottomMenuBar(selectedTab: $selectedTab)) // Attach BottomMenuBar
+            .modifier(BottomMenuBar(selectedTab: $selectedTab)) // Attach consistent menu bar
         }
     }
 }
