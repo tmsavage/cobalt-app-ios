@@ -8,79 +8,69 @@
 import SwiftUI
 
 struct HomeView: View {
+    @EnvironmentObject var filterSettings: FilterSettings
     @State private var restaurants: [Restaurant] = []
-    @State private var searchQuery: String = "" // For search bar
-    @State private var selectedDay: String = "All" // For day filter
-
-    let days = ["All", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    @State private var searchQuery: String = ""
+    @State private var navigateToResults: Bool = false
+    @State private var selectedTab: BottomMenuBar.Tab = .list
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
-                // Search Bar
-                TextField("Search restaurants...", text: $searchQuery)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding()
+                // Logo
+                Text("Cobalt")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundColor(Color.blue)
 
-                // Day Filter Picker
-                Picker("Day", selection: $selectedDay) {
-                    ForEach(days, id: \.self) { day in
-                        Text(day).tag(day)
+                // Search Bar
+                HStack {
+                    TextField("Search by bar..", text: $searchQuery)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding(.leading)
+
+                    NavigationLink(destination: FilterView().environmentObject(filterSettings)) {
+                        Image(systemName: "line.horizontal.3.decrease.circle")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                            .padding(.trailing)
                     }
                 }
-                .pickerStyle(SegmentedPickerStyle())
                 .padding()
 
-                // Filtered and Searched List
-                List(filteredRestaurants) { restaurant in
-                    NavigationLink(destination: DetailView(restaurant: restaurant)) {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text(restaurant.name)
-                                .font(.headline)
-                                .foregroundColor(.primary)
-
-                            Text(restaurant.location)
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                                .lineLimit(1) // Limit to a single line if the location is long
-
-                            Divider() // Add a line separator for better spacing
-                        }
-                        .padding(.vertical, 4) // Add vertical padding between list items
-                    }
+                // Search Button
+                Button(action: {
+                    navigateToResults = true
+                }) {
+                    Text("Search")
+                        .fontWeight(.semibold)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                        .padding(.horizontal)
+                }
+                .navigationDestination(isPresented: $navigateToResults) {
+                    ResultsView().environmentObject(filterSettings)
                 }
 
-                .listStyle(InsetGroupedListStyle()) // For better styling
-                .navigationTitle("Happy Hour Spots")
-                .onAppear {
-                    fetchRestaurants()
-                }
+                // Featured Bars
+                Text("Featured Bars")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .padding(.top)
+
+                Spacer()
             }
+            .modifier(BottomMenuBar(selectedTab: $selectedTab)) // Attach BottomMenuBar
         }
     }
+}
 
-    // Filter and Search Logic
-    var filteredRestaurants: [Restaurant] {
-        restaurants.filter { restaurant in
-            (selectedDay == "All" || restaurant.cobalt_apps.contains { $0.day == selectedDay }) &&
-            (searchQuery.isEmpty || restaurant.name.localizedCaseInsensitiveContains(searchQuery))
-        }
-    }
-
-    // Fetch Data from Backend
-    func fetchRestaurants() {
-        guard let url = URL(string: "\(API.baseURL)/restaurants") else { return }
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            if let data = data {
-                do {
-                    let decodedData = try JSONDecoder().decode([Restaurant].self, from: data)
-                    DispatchQueue.main.async {
-                        self.restaurants = decodedData
-                    }
-                } catch {
-                    print("Failed to decode: \(error)")
-                }
-            }
-        }.resume()
+struct HomeView_Previews: PreviewProvider {
+    static var previews: some View {
+        HomeView()
+            .environmentObject(FilterSettings())
     }
 }

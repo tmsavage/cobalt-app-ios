@@ -24,7 +24,8 @@ struct DetailView: View {
 
                 Text(restaurant.description)
                     .font(.body)
-                    .padding(.top)
+                    .padding(.top, CGFloat.zero)
+
 
                 Text("Features: \(restaurant.features)")
                     .font(.subheadline)

@@ -14,8 +14,13 @@ struct Restaurant: Identifiable, Decodable {
     let description: String
     let features: String
     let cobalt_apps: [HappyHour] // Match the key in the JSON response
-    
+
     var id: Int { restaurant_id }
+
+    // Add a computed property or array for associated days
+    var days: [String] {
+        cobalt_apps.map { $0.day }
+    }
 
     enum CodingKeys: String, CodingKey {
         case restaurant_id
@@ -33,3 +38,4 @@ struct HappyHour: Decodable {
     let end_time: String
     let specials: String
 }
+

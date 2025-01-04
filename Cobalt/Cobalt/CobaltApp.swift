@@ -9,9 +9,14 @@ import SwiftUI
 
 @main
 struct CobaltApp: App {
+    @StateObject var filterSettings = FilterSettings() // Shared Instance
+    
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            NavigationView{
+                HomeView()
+                    .environmentObject(filterSettings) // Pass to HomeView
+            }
         }
     }
 }
