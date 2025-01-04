@@ -12,7 +12,8 @@ struct ResultsView: View {
     @State private var restaurants: [Restaurant] = [] // Restaurants from API
     @State private var isLoading: Bool = true // Loading state
     @State private var errorMessage: String? = nil // Error handling
-    @Binding var navigateToResults: Bool // Control navigation behavior
+    @Binding var selectedTab: BottomMenuBar.Tab // Track tab selection
+    @Binding var showResults: Bool // Control visibility of ResultsView
 
     var body: some View {
         VStack {
@@ -46,7 +47,7 @@ struct ResultsView: View {
                 // Results List
                 ScrollView {
                     VStack(spacing: 16) {
-                        ForEach(filteredRestaurants) { restaurant in
+                        ForEach(restaurants) { restaurant in
                             NavigationLink(destination: DetailView(restaurant: restaurant)) {
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text(restaurant.name)
@@ -67,11 +68,15 @@ struct ResultsView: View {
                 }
             }
         }
-        .navigationTitle("Results")
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(false)
         .onAppear {
             fetchRestaurants()
+        }
+        .onChange(of: selectedTab) { newTab in
+            // React to bottom menu tab changes
+            if newTab == .map {
+                // Transition to MapView
+                showResults = false
+            }
         }
     }
 
@@ -98,50 +103,11 @@ struct ResultsView: View {
             }
         }
     }
-
-    func convertTimeStringToHours(_ time: String) -> Int {
-        let formats = ["h:mm a", "h a"] // List of supported time formats
-        let dateFormatter = DateFormatter()
-
-        for format in formats {
-            dateFormatter.dateFormat = format
-            if let date = dateFormatter.date(from: time) {
-                let calendar = Calendar.current
-                return calendar.component(.hour, from: date)
-            }
-        }
-
-        // If all formats fail, log an error and return 0
-        print("Error converting time: \(time)")
-        return 0
-    }
-
-    // Filtered Restaurants Based on Filters
-    var filteredRestaurants: [Restaurant] {
-        restaurants.filter { restaurant in
-            // Check if any of the restaurant's happy hours match the selected days and time range
-            restaurant.cobalt_apps.contains { happyHour in
-                // Check if the day matches the user's selected days
-                let matchesDay = filterSettings.selectedDays.isEmpty || filterSettings.selectedDays.contains(happyHour.day)
-
-                // Convert times to numerical values for comparison
-                let happyHourStart = convertTimeStringToHours(happyHour.start_time)
-                let happyHourEnd = convertTimeStringToHours(happyHour.end_time)
-                let userStart = convertTimeStringToHours(filterSettings.startTime)
-                let userEnd = convertTimeStringToHours(filterSettings.endTime)
-
-                // Check if the time ranges overlap
-                let matchesTime = (userStart == 0 && userEnd == 23) || (userStart < happyHourEnd && userEnd > happyHourStart)
-
-                return matchesDay && matchesTime
-            }
-        }
-    }
 }
 
 struct ResultsView_Previews: PreviewProvider {
     static var previews: some View {
-        ResultsView(navigateToResults: .constant(true))
+        ResultsView(selectedTab: .constant(.list), showResults: .constant(true))
             .environmentObject(FilterSettings())
     }
 }

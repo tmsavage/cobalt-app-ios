@@ -10,11 +10,14 @@ import SwiftUI
 struct HomeView: View {
     @EnvironmentObject var filterSettings: FilterSettings
     @State private var selectedTab: BottomMenuBar.Tab = .list
+    @State private var showResults: Bool = false // Track ResultsView visibility
     @State private var searchQuery: String = ""
 
     var body: some View {
-        NavigationStack {
-            VStack {
+        VStack {
+            if showResults {
+                ResultsView(selectedTab: $selectedTab, showResults: $showResults)
+            } else {
                 if selectedTab == .list {
                     // List View Content
                     VStack {
@@ -40,8 +43,9 @@ struct HomeView: View {
                         .padding()
 
                         // Search Button
-                        NavigationLink(destination: ResultsView(navigateToResults: .constant(true))
-                                        .environmentObject(filterSettings)) {
+                        Button(action: {
+                            showResults = true // Show ResultsView
+                        }) {
                             Text("Search")
                                 .fontWeight(.semibold)
                                 .padding()
@@ -61,12 +65,11 @@ struct HomeView: View {
                         Spacer()
                     }
                 } else if selectedTab == .map {
-                    // Map View Content
                     MapView(selectedTab: $selectedTab)
                 }
             }
-            .modifier(BottomMenuBar(selectedTab: $selectedTab)) // Attach consistent menu bar
         }
+        .modifier(BottomMenuBar(selectedTab: $selectedTab)) // Attach consistent menu bar
     }
 }
 
