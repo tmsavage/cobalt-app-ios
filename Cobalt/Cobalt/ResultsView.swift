@@ -17,12 +17,32 @@ struct ResultsView: View {
 
     var body: some View {
         VStack {
+            // Custom Back Button
+            HStack {
+                Button(action: {
+                    showResults = false // Navigate back to HomeView
+                }) {
+                    HStack {
+                        Image(systemName: "chevron.left")
+                        Text("Back")
+                    }
+                    .foregroundColor(.blue)
+                }
+                Spacer()
+            }
+            .padding()
+
             // Logo
             Text("Cobalt")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .foregroundColor(Color.blue)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.top)
 
+            Spacer() // Push the error or content down
+
+            // Main content area
             if isLoading {
                 ProgressView("Loading...")
                     .padding()
@@ -31,20 +51,6 @@ struct ResultsView: View {
                     .foregroundColor(.red)
                     .padding()
             } else {
-                // Results Header
-                VStack(alignment: .leading) {
-                    Text("Results")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .padding(.horizontal)
-
-                    Divider()
-                        .background(Color.black)
-                        .padding(.horizontal)
-                }
-                .padding(.top)
-
-                // Results List
                 ScrollView {
                     VStack(spacing: 16) {
                         ForEach(restaurants) { restaurant in
@@ -67,15 +73,15 @@ struct ResultsView: View {
                     }
                 }
             }
+
+            Spacer() // Push the content up
         }
         .onAppear {
             fetchRestaurants()
         }
-        .onChange(of: selectedTab) { newTab in
-            // React to bottom menu tab changes
-            if newTab == .map {
-                // Transition to MapView
-                showResults = false
+        .onChange(of: selectedTab) {
+            if selectedTab == .map {
+                showResults = false // Transition to MapView
             }
         }
     }
@@ -102,12 +108,5 @@ struct ResultsView: View {
                 }
             }
         }
-    }
-}
-
-struct ResultsView_Previews: PreviewProvider {
-    static var previews: some View {
-        ResultsView(selectedTab: .constant(.list), showResults: .constant(true))
-            .environmentObject(FilterSettings())
     }
 }
