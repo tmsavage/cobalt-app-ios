@@ -53,7 +53,8 @@ struct ResultsView: View {
             } else {
                 ScrollView {
                     VStack(spacing: 16) {
-                        ForEach(restaurants) { restaurant in
+                        // Use the filteredRestaurants array here
+                        ForEach(filteredRestaurants) { restaurant in
                             NavigationLink(destination: DetailView(restaurant: restaurant)) {
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text(restaurant.name)
@@ -86,12 +87,53 @@ struct ResultsView: View {
         }
     }
 
+    // Helper function to convert a time string (e.g. "9:00 AM") to an integer hour
+    func convertTimeStringToHours(_ time: String) -> Int {
+        let formats = ["h:mm a", "h a"] // List of supported time formats
+        let dateFormatter = DateFormatter()
+        for format in formats {
+            dateFormatter.dateFormat = format
+            if let date = dateFormatter.date(from: time) {
+                let calendar = Calendar.current
+                return calendar.component(.hour, from: date)
+            }
+        }
+        // If all formats fail, log an error and return 0
+        print("Error converting time: \(time)")
+        return 0
+    }
+
+    // Computed property: Filter the restaurants based on selected days and times
+    var filteredRestaurants: [Restaurant] {
+        restaurants.filter { restaurant in
+            // Check if *any* of the restaurant's happy hours match
+            // the user's selected days and time range
+            restaurant.cobalt_apps.contains { happyHour in
+                // Check if the day matches the user's selected days
+                let matchesDay = filterSettings.selectedDays.isEmpty ||
+                                 filterSettings.selectedDays.contains(happyHour.day)
+
+                // Convert times to numerical values for comparison
+                let happyHourStart = convertTimeStringToHours(happyHour.start_time)
+                let happyHourEnd   = convertTimeStringToHours(happyHour.end_time)
+                let userStart      = convertTimeStringToHours(filterSettings.startTime)
+                let userEnd        = convertTimeStringToHours(filterSettings.endTime)
+
+                // Check if the time ranges overlap
+                let matchesTime = (userStart == 0 && userEnd == 23)
+                    || (userStart < happyHourEnd && userEnd > happyHourStart)
+
+                return matchesDay && matchesTime
+            }
+        }
+    }
+
     // Fetch Restaurants from API
     func fetchRestaurants() {
         isLoading = true
         errorMessage = nil
 
-        guard let url = URL(string: "\(API.baseURL)/restaurants") else {
+        guard let url = URL(string: "\(API.baseURL)/cobalt_api_handler") else {
             errorMessage = "Invalid API URL"
             isLoading = false
             return

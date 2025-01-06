@@ -8,5 +8,6 @@
 import Foundation
 
 struct API {
-    static let baseURL = "http://127.0.0.1:5000" // Update with deployed URL later
+//    static let baseURL = "http://127.0.0.1:5000" // Update with deployed URL later
+    static let baseURL = "https://ffz2uxevgh.execute-api.us-east-2.amazonaws.com/dev"
 }
