@@ -12,15 +12,48 @@ struct FilterView: View {
     @EnvironmentObject var filterSettings: FilterSettings // Access shared data
 
     let days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    let hours = ["12 AM", "1 AM", "2 AM", "3 AM", "4 AM", "5 AM", "6 AM", "7 AM", "8 AM", "9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM", "6 PM", "7 PM", "8 PM", "9 PM", "10 PM", "11 PM"]
+    
+    private var halfHourIncrements: [String] {
+        var times = [String]()
+        // Loop from hour 0 to 23
+        for hour in 0..<24 {
+            // Loop over two half-hour increments (xx:00 and xx:30)
+            for half in 0..<2 {
+                let minute = half * 30
+                let isAM = hour < 12
+                let twelveHour = hour % 12
+                let displayHour = (twelveHour == 0 ? 12 : twelveHour)  // 0 -> 12, 13 -> 1, etc.
+                
+                // Convert 0 or 30 into a zero-padded string ("00" or "30")
+                let displayMinute = String(format: "%02d", minute)
+                
+                let meridiem = isAM ? "AM" : "PM"
+                let timeString = "\(displayHour):\(displayMinute) \(meridiem)"
+                times.append(timeString)
+            }
+        }
+        return times
+    }
 
     var body: some View {
-        VStack {
-            // Logo at the top
-            Text("Cobalt")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .foregroundColor(Color.blue)
+        VStack(spacing: 0) {
+            // Top row: Logo on the left, Clear All button on the right
+            HStack {
+
+                Spacer()
+                
+                Button(action: {
+                    // Clear all filters
+                    filterSettings.selectedDays.removeAll()
+                    filterSettings.startTime = "12:00 AM"
+                    filterSettings.endTime   = "12:00 AM"
+                }) {
+                    Text("Clear All")
+                        .foregroundColor(.blue)
+                }
+                .padding(.trailing)
+            }
+            .padding(.top) // Some top padding to space from the top edge
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
@@ -63,35 +96,43 @@ struct FilterView: View {
                             Text("Start:")
                                 .font(.headline)
                             Spacer()
+                            
                             Picker("Start Time", selection: $filterSettings.startTime) {
-                                ForEach(hours, id: \.self) { hour in
-                                    Text(hour)
+                                ForEach(halfHourIncrements, id: \.self) { time in
+                                    Text(time)
+                                        .foregroundColor(.primary)
+                                        .tag(time)
                                 }
                             }
-                            .pickerStyle(MenuPickerStyle())
+                            .pickerStyle(WheelPickerStyle())
+                            .frame(width: 120, height: 150)
                         }
-
+                                
                         HStack {
                             Text("End:")
                                 .font(.headline)
                             Spacer()
+                            
                             Picker("End Time", selection: $filterSettings.endTime) {
-                                ForEach(hours, id: \.self) { hour in
-                                    Text(hour)
+                                ForEach(halfHourIncrements, id: \.self) { time in
+                                    Text(time)
+                                        .foregroundColor(.primary)
+                                        .tag(time)
                                 }
                             }
-                            .pickerStyle(MenuPickerStyle())
+                            .pickerStyle(WheelPickerStyle())
+                            .frame(width: 120, height: 150)
                         }
                     }
                 }
                 .padding()
             }
 
-            // Save Changes Button
+            // Apply Button at the bottom
             Button(action: {
                 presentationMode.wrappedValue.dismiss() // Dismiss the FilterView
             }) {
-                Text("Save Changes")
+                Text("Apply")
                     .fontWeight(.semibold)
                     .padding()
                     .frame(maxWidth: .infinity)
@@ -100,6 +141,7 @@ struct FilterView: View {
                     .cornerRadius(8)
                     .padding(.horizontal)
             }
+            .padding(.bottom) // Bottom padding
         }
     }
 }

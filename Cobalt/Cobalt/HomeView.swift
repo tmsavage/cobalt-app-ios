@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  HomeView.swift
 //  Cobalt
 //
 //  Created by Toby Savage on 11/22/24.
@@ -16,10 +16,14 @@ struct HomeView: View {
     var body: some View {
         VStack {
             if showResults {
-                ResultsView(selectedTab: $selectedTab, showResults: $showResults)
+                // Pass the search text into ResultsView
+                ResultsView(
+                    searchQuery: searchQuery,
+                    selectedTab: $selectedTab,
+                    showResults: $showResults
+                )
             } else {
                 if selectedTab == .list {
-                    // List View Content
                     VStack {
                         // Logo
                         Text("Cobalt")
@@ -44,7 +48,8 @@ struct HomeView: View {
 
                         // Search Button
                         Button(action: {
-                            showResults = true // Show ResultsView
+                            // Show ResultsView, which will use searchQuery
+                            showResults = true
                         }) {
                             Text("Search")
                                 .fontWeight(.semibold)
@@ -55,7 +60,7 @@ struct HomeView: View {
                                 .cornerRadius(8)
                                 .padding(.horizontal)
                         }
-
+        
                         // Featured Bars
                         Text("Featured Bars")
                             .font(.title2)
