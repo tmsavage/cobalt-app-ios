@@ -9,6 +9,6 @@ import SwiftUI
 
 class FilterSettings: ObservableObject {
     @Published var selectedDays: Set<String> = []
-    @Published var startTime: String = "12 AM"
-    @Published var endTime: String = "1 AM"
+    @Published var startTime: String = "12:00 AM"
+    @Published var endTime: String = "11:30 PM"
 }

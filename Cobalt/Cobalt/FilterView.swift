@@ -46,7 +46,7 @@ struct FilterView: View {
                     // Clear all filters
                     filterSettings.selectedDays.removeAll()
                     filterSettings.startTime = "12:00 AM"
-                    filterSettings.endTime   = "12:00 AM"
+                    filterSettings.endTime   = "11:30 PM"
                 }) {
                     Text("Clear All")
                         .foregroundColor(.blue)
