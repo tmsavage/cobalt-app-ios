@@ -6,21 +6,21 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct MapView: View {
-    @Binding var selectedTab: BottomMenuBar.Tab
+    let restaurants: [Restaurant] // Accept a list of restaurants to display pins
 
     var body: some View {
         VStack {
-            // Logo at the top
-            Text("Cobalt")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .foregroundColor(Color.blue)
 
             Spacer()
-            Text("Feature Coming Soon.")
+
+            // Placeholder Map
+            Text("Map with \(restaurants.count) Pins")
                 .foregroundColor(.gray)
+                .font(.headline)
+
             Spacer()
         }
     }
@@ -28,6 +28,6 @@ struct MapView: View {
 
 struct MapView_Previews: PreviewProvider {
     static var previews: some View {
-        MapView(selectedTab: .constant(.map))
+        MapView(restaurants: []) // Pass an empty array for preview
     }
 }

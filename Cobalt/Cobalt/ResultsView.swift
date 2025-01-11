@@ -12,85 +12,147 @@ struct ResultsView: View {
     @State private var restaurants: [Restaurant] = [] // Restaurants from API
     @State private var isLoading: Bool = true // Loading state
     @State private var errorMessage: String? = nil // Error handling
-    
-    // Accept searchQuery from HomeView
-    let searchQuery: String
+    @State private var locationQuery: String = "" // New: Location input
 
-    @Binding var selectedTab: BottomMenuBar.Tab // Track tab selection
-    @Binding var showResults: Bool // Control visibility of ResultsView
+    @State var searchQuery: String
+    @State private var isMapView: Bool = false // Track toggle state (List vs. Map)
+
+    @Binding var selectedTab: BottomMenuBar.Tab
+    @Binding var showResults: Bool
 
     var body: some View {
         VStack {
-            // Custom Back Button
+            // Top Navigation
             HStack {
                 Button(action: {
-                    showResults = false // Navigate back to HomeView
+                    selectedTab = .home // Explicitly switch to HomeView
                 }) {
-                    HStack {
-                        Image(systemName: "chevron.left")
-                        Text("Back")
-                    }
-                    .foregroundColor(.blue)
+                    Text("Cancel")
+                        .foregroundColor(.blue)
                 }
                 Spacer()
+
+                // Map/List Toggle Button
+                Button(action: {
+                    isMapView.toggle()
+                }) {
+                    Text(isMapView ? "List View" : "Map View")
+                        .fontWeight(.bold)
+                        .padding(8)
+                        .background(Color.blue.opacity(0.1))
+                        .foregroundColor(.blue)
+                        .cornerRadius(8)
+                }
             }
             .padding()
 
-            // Logo
-            Text("Cobalt")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .foregroundColor(Color.blue)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .padding(.top)
+            // Search Bar
+            TextField("Search by bar...", text: $searchQuery)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .foregroundColor(.primary)
+                .padding(.horizontal)
 
-            Spacer() // Push the error or content down
+            // Location Bar
+            TextField("Current Location", text: $locationQuery)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .foregroundColor(.primary)
+                .padding(.horizontal)
 
-            // Main content area
-            if isLoading {
-                ProgressView("Loading...")
-                    .padding()
-            } else if let errorMessage = errorMessage {
-                Text(errorMessage)
-                    .foregroundColor(.red)
-                    .padding()
+            // Filter, Start Time, and End Time Buttons
+            HStack(spacing: 16) {
+                // Filter Button
+                NavigationLink(destination: FilterView().environmentObject(filterSettings)) {
+                    Image(systemName: "line.horizontal.3.decrease.circle")
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                        .padding(.vertical, 6)
+                        .cornerRadius(8)
+                }
+
+                // Start Time Button
+                Button(action: {
+                    // Placeholder action
+                }) {
+                    Text("Start: 4 PM")
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 6)
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(25)
+                }
+
+                // End Time Button
+                Button(action: {
+                    // Placeholder action
+                }) {
+                    Text("End: 7 PM")
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 6)
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(25)
+                }
+            }
+            .padding(.horizontal)
+
+            Divider().padding(.vertical)
+
+            // Results Header
+            Text("Results")
+                .font(.headline)
+                .padding(.horizontal, 16)
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            // Conditionally display Map or List
+            if isMapView {
+                MapView(restaurants: filteredRestaurants)
             } else {
-                ScrollView {
-                    VStack(spacing: 16) {
-                        ForEach(filteredRestaurants) { restaurant in
-                            NavigationLink(destination: DetailView(restaurant: restaurant)) {
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(restaurant.name)
-                                        .font(.headline)
-                                        .foregroundColor(.primary)
+                if isLoading {
+                    ProgressView("Loading...")
+                        .padding()
+                } else if let errorMessage = errorMessage {
+                    Text(errorMessage)
+                        .foregroundColor(.red)
+                        .padding()
+                } else {
+                    ScrollView {
+                        VStack(spacing: 16) {
+                            ForEach(filteredRestaurants) { restaurant in
+                                NavigationLink(
+                                    destination: DetailView(
+                                        restaurant: restaurant,
+                                        selectedTab: $selectedTab // Pass selectedTab to DetailView
+                                    )
+                                ) {
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(restaurant.name)
+                                            .font(.headline)
+                                            .foregroundColor(.primary)
 
-                                    Text(restaurant.location)
-                                        .font(.subheadline)
-                                        .foregroundColor(.gray)
+                                        Text(restaurant.location)
+                                            .font(.subheadline)
+                                            .foregroundColor(.gray)
+                                    }
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding()
+                                    .background(Color.gray.opacity(0.2))
+                                    .cornerRadius(8)
+                                    .padding(.horizontal, 16)
                                 }
-                                // Make the VStack stretch full width and left-align its contents
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding()
-                                .background(Color.gray.opacity(0.2))
-                                .cornerRadius(8)
-                                // Apply horizontal padding so there's space on left and right
-                                .padding(.horizontal, 16)
                             }
                         }
                     }
                 }
-
             }
 
-            Spacer() // Push the content up
+            Spacer()
         }
         .onAppear {
             fetchRestaurants()
         }
-        // Updated .onChange to the newer recommended usage
         .onChange(of: selectedTab) {
-            if selectedTab == .map {
-                showResults = false // Transition to MapView
+            if selectedTab == .search {
+                isMapView = false // Reset to List View when returning to ResultsView
             }
         }
     }
@@ -119,48 +181,45 @@ struct ResultsView: View {
         }
     }
 
-    // Helper function to convert a time string (e.g. "9:00 AM") to an integer hour
-    func convertTimeStringToHours(_ time: String) -> Int {
-        let formats = ["h:mm a", "h a"] // List of supported time formats
-        let dateFormatter = DateFormatter()
-        for format in formats {
-            dateFormatter.dateFormat = format
-            if let date = dateFormatter.date(from: time) {
-                let calendar = Calendar.current
-                return calendar.component(.hour, from: date)
-            }
-        }
-        // If all formats fail, log an error and return 0
-        print("Error converting time: \(time)")
-        return 0
-    }
-
-    // Computed property: Filter the restaurants based on selected days, times, and the search query
+    // Filter results dynamically based on search, location, and filter settings
     var filteredRestaurants: [Restaurant] {
         restaurants.filter { restaurant in
-            // 1. Day/Time filter
-            let matchesTimeDay = restaurant.cobalt_apps.contains { happyHour in
-                let matchesDay = filterSettings.selectedDays.isEmpty ||
-                                 filterSettings.selectedDays.contains(happyHour.day)
-
-                let happyHourStart = convertTimeStringToHours(happyHour.start_time)
-                let happyHourEnd   = convertTimeStringToHours(happyHour.end_time)
-                let userStart      = convertTimeStringToHours(filterSettings.startTime)
-                let userEnd        = convertTimeStringToHours(filterSettings.endTime)
-
-                // Check if the time ranges overlap
-                let matchesTime = (userStart == 0 && userEnd == 23)
-                    || (userStart < happyHourEnd && userEnd > happyHourStart)
-
-                return matchesDay && matchesTime
-            }
-
-            // 2. Search filter (case-insensitive)
+            // Match search query
             let matchesSearch = searchQuery.isEmpty ||
                 restaurant.name.lowercased().contains(searchQuery.lowercased())
 
-            // Must match both
-            return matchesTimeDay && matchesSearch
+            // Match location query
+            let matchesLocation = locationQuery.isEmpty ||
+                restaurant.location.lowercased().contains(locationQuery.lowercased())
+
+            // Match selected days
+            let matchesDay = filterSettings.selectedDays.isEmpty ||
+                restaurant.cobalt_apps.contains { happyHour in
+                    filterSettings.selectedDays.contains(happyHour.day)
+                }
+
+            // Match time range
+            let matchesTime = restaurant.cobalt_apps.contains { happyHour in
+                let happyHourStart = convertTimeStringToHours(happyHour.start_time)
+                let happyHourEnd = convertTimeStringToHours(happyHour.end_time)
+                let userStart = convertTimeStringToHours(filterSettings.startTime)
+                let userEnd = convertTimeStringToHours(filterSettings.endTime)
+
+                return (userStart <= happyHourEnd && userEnd >= happyHourStart)
+            }
+
+            // Combine all filters
+            return matchesSearch && matchesLocation && matchesDay && matchesTime
         }
+    }
+
+    // Helper function to convert a time string to an hour
+    func convertTimeStringToHours(_ time: String) -> Int {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "h:mm a"
+        if let date = dateFormatter.date(from: time) {
+            return Calendar.current.component(.hour, from: date)
+        }
+        return 0
     }
 }

@@ -10,6 +10,8 @@ import SwiftUI
 struct DetailView: View {
     let restaurant: Restaurant
 
+    @Binding var selectedTab: BottomMenuBar.Tab // Bind the selected tab to manage navigation
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
@@ -25,7 +27,6 @@ struct DetailView: View {
                 Text(restaurant.description)
                     .font(.body)
                     .padding(.top, CGFloat.zero)
-
 
                 Text("Features: \(restaurant.features)")
                     .font(.subheadline)
@@ -58,5 +59,12 @@ struct DetailView: View {
             .padding()
         }
         .navigationTitle("Details")
+        .onChange(of: selectedTab) {
+            if selectedTab == .search {
+                // Perform any clean-up or state updates if needed here
+                // Navigation logic will be managed by ResultsView
+            }
+        }
+
     }
 }

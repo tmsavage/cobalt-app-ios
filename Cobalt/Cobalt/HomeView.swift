@@ -9,59 +9,48 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject var filterSettings: FilterSettings
-    @State private var selectedTab: BottomMenuBar.Tab = .list
+    @Binding var selectedTab: BottomMenuBar.Tab // Updated to match new logic
     @State private var showResults: Bool = false // Track ResultsView visibility
     @State private var searchQuery: String = ""
 
     var body: some View {
         VStack {
             if showResults {
-                // Pass the search text into ResultsView
+                // Navigate to ResultsView
                 ResultsView(
                     searchQuery: searchQuery,
                     selectedTab: $selectedTab,
                     showResults: $showResults
                 )
             } else {
-                if selectedTab == .list {
-                    VStack {
+                if selectedTab == .home { // Use .home instead of .list
+                    VStack(spacing: 16) {
                         // Logo
                         Text("Cobalt")
                             .font(.largeTitle)
                             .fontWeight(.bold)
                             .foregroundColor(Color.blue)
 
-                        // Search Bar
+                        // Search Bar (Styled to match ResultsView)
                         HStack {
-                            TextField("Search by bar..", text: $searchQuery)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                                .padding(.leading)
-
-                            NavigationLink(destination: FilterView().environmentObject(filterSettings)) {
-                                Image(systemName: "line.horizontal.3.decrease.circle")
-                                    .resizable()
-                                    .frame(width: 24, height: 24)
-                                    .padding(.trailing)
+                            HStack {
+                                Image(systemName: "magnifyingglass") // Search icon
+                                    .foregroundColor(.gray)
+                                Text("Search by bar...")
+                                    .foregroundColor(.gray) // Same as ResultsView
+                                    .frame(maxWidth: .infinity, alignment: .leading)
                             }
+                            .padding()
+                            .background(Color(.systemGray6)) // Matches ResultsView background
+                            .cornerRadius(8)
                         }
-                        .padding()
+                        .contentShape(Rectangle()) // Make the entire area tappable
+                        .onTapGesture {
+                            selectedTab = .search // Navigate to Search tab without feedback
+                        }
+                        .padding(.horizontal)
 
-                        // Search Button
-                        Button(action: {
-                            // Show ResultsView, which will use searchQuery
-                            showResults = true
-                        }) {
-                            Text("Search")
-                                .fontWeight(.semibold)
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(Color.blue)
-                                .foregroundColor(.white)
-                                .cornerRadius(8)
-                                .padding(.horizontal)
-                        }
-        
-                        // Featured Bars
+                        // Featured Bars Section
                         Text("Featured Bars")
                             .font(.title2)
                             .fontWeight(.bold)
@@ -69,18 +58,8 @@ struct HomeView: View {
 
                         Spacer()
                     }
-                } else if selectedTab == .map {
-                    MapView(selectedTab: $selectedTab)
                 }
             }
         }
-        .modifier(BottomMenuBar(selectedTab: $selectedTab)) // Attach consistent menu bar
-    }
-}
-
-struct HomeView_Previews: PreviewProvider {
-    static var previews: some View {
-        HomeView()
-            .environmentObject(FilterSettings())
     }
 }

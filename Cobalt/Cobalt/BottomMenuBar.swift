@@ -11,45 +11,50 @@ struct BottomMenuBar: ViewModifier {
     @Binding var selectedTab: Tab
 
     enum Tab: String {
-        case list
-        case map
+        case home
+        case search
     }
 
     func body(content: Content) -> some View {
         VStack {
             content
 
-            Divider()
-                .background(Color.gray)
+            // Remove the divider
+            // Divider()
+            //     .background(Color.gray)
 
             HStack {
+                // Home Tab
                 Button(action: {
-                    selectedTab = .list
+                    selectedTab = .home
                 }) {
                     VStack {
-                        Image(systemName: "line.horizontal.3")
-                            .foregroundColor(selectedTab == .list ? .blue : .gray)
-                        Text("List")
+                        Image(systemName: "house")
+                            .foregroundColor(selectedTab == .home ? .blue : .gray)
+                        Text("Home")
                             .font(.caption)
-                            .foregroundColor(selectedTab == .list ? .blue : .gray)
+                            .foregroundColor(selectedTab == .home ? .blue : .gray)
                     }
+                    .padding(.top, 8)
                 }
                 .frame(maxWidth: .infinity)
 
+                // Search Tab
                 Button(action: {
-                    selectedTab = .map
+                    selectedTab = .search
                 }) {
                     VStack {
-                        Image(systemName: "mappin.circle")
-                            .foregroundColor(selectedTab == .map ? .blue : .gray)
-                        Text("Map")
+                        Image(systemName: "magnifyingglass")
+                            .foregroundColor(selectedTab == .search ? .blue : .gray)
+                        Text("Search")
                             .font(.caption)
-                            .foregroundColor(selectedTab == .map ? .blue : .gray)
+                            .foregroundColor(selectedTab == .search ? .blue : .gray)
                     }
+                    .padding(.top, 8)
                 }
                 .frame(maxWidth: .infinity)
             }
-            .padding()
+            .padding(.vertical, 8) // Reduce vertical padding to shorten the height
             .background(Color.blue.opacity(0.1))
         }
     }
