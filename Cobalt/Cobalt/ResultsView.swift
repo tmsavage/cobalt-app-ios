@@ -69,29 +69,21 @@ struct ResultsView: View {
                         .cornerRadius(8)
                 }
 
-                // Start Time Button
-                Button(action: {
-                    // Placeholder action
-                }) {
-                    Text("Start: 4 PM")
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 6)
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(25)
-                }
+                // Start Time Display
+                Text("Start: \(filterSettings.startTime)")
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 6)
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(25)
 
-                // End Time Button
-                Button(action: {
-                    // Placeholder action
-                }) {
-                    Text("End: 7 PM")
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 6)
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(25)
-                }
+                // End Time Display
+                Text("End: \(filterSettings.endTime)")
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 6)
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(25)
             }
             .padding(.horizontal)
 
