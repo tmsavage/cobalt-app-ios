@@ -121,7 +121,7 @@ struct ResultsView: View {
                                             .font(.headline)
                                             .foregroundColor(.primary)
 
-                                        Text(restaurant.location)
+                                        Text(restaurant.fullAddress) // Updated to use fullAddress
                                             .font(.subheadline)
                                             .foregroundColor(.gray)
                                     }
@@ -182,7 +182,7 @@ struct ResultsView: View {
 
             // Match location query
             let matchesLocation = locationQuery.isEmpty ||
-                restaurant.location.lowercased().contains(locationQuery.lowercased())
+                restaurant.fullAddress.lowercased().contains(locationQuery.lowercased()) // Updated to fullAddress
 
             // Match both selected days and time range
             let matchesDayAndTime = restaurant.cobalt_apps.contains { happyHour in
@@ -207,7 +207,6 @@ struct ResultsView: View {
         }
     }
 
-
     // Helper function to convert a time string to fractional hours
     func convertTimeStringToHours(_ time: String) -> Double {
         let dateFormatter = DateFormatter()
@@ -220,5 +219,4 @@ struct ResultsView: View {
 
         return hours + minutes
     }
-
 }

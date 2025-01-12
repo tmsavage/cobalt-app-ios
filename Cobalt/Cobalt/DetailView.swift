@@ -20,7 +20,7 @@ struct DetailView: View {
                     .font(.largeTitle)
                     .bold()
                     .foregroundColor(.primary)
-                Text(restaurant.location)
+                Text(restaurant.fullAddress)
                     .font(.title3)
                     .foregroundColor(.secondary)
 
