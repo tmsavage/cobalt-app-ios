@@ -184,34 +184,41 @@ struct ResultsView: View {
             let matchesLocation = locationQuery.isEmpty ||
                 restaurant.location.lowercased().contains(locationQuery.lowercased())
 
-            // Match selected days
-            let matchesDay = filterSettings.selectedDays.isEmpty ||
-                restaurant.cobalt_apps.contains { happyHour in
+            // Match both selected days and time range
+            let matchesDayAndTime = restaurant.cobalt_apps.contains { happyHour in
+                // Check if the happy hour day matches the user's selected days
+                let matchesDay = filterSettings.selectedDays.isEmpty ||
                     filterSettings.selectedDays.contains(happyHour.day)
-                }
 
-            // Match time range
-            let matchesTime = restaurant.cobalt_apps.contains { happyHour in
+                // Check if the happy hour time matches the user's time range
                 let happyHourStart = convertTimeStringToHours(happyHour.start_time)
                 let happyHourEnd = convertTimeStringToHours(happyHour.end_time)
                 let userStart = convertTimeStringToHours(filterSettings.startTime)
                 let userEnd = convertTimeStringToHours(filterSettings.endTime)
 
-                return (userStart <= happyHourEnd && userEnd >= happyHourStart)
+                let matchesTime = (userStart < happyHourEnd && userEnd > happyHourStart)
+
+                // Only return true if both day and time match
+                return matchesDay && matchesTime
             }
 
             // Combine all filters
-            return matchesSearch && matchesLocation && matchesDay && matchesTime
+            return matchesSearch && matchesLocation && matchesDayAndTime
         }
     }
 
-    // Helper function to convert a time string to an hour
-    func convertTimeStringToHours(_ time: String) -> Int {
+
+    // Helper function to convert a time string to fractional hours
+    func convertTimeStringToHours(_ time: String) -> Double {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "h:mm a"
-        if let date = dateFormatter.date(from: time) {
-            return Calendar.current.component(.hour, from: date)
-        }
-        return 0
+        guard let date = dateFormatter.date(from: time) else { return 0.0 }
+
+        let calendar = Calendar.current
+        let hours = Double(calendar.component(.hour, from: date))
+        let minutes = Double(calendar.component(.minute, from: date)) / 60.0
+
+        return hours + minutes
     }
+
 }
