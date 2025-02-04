@@ -26,10 +26,10 @@ struct HomeView: View {
                 if selectedTab == .home { // Use .home instead of .list
                     VStack(spacing: 16) {
                         // Logo
-                        Text("Cobalt")
+                        Text("Spigo")
                             .font(.largeTitle)
                             .fontWeight(.bold)
-                            .foregroundColor(Color.blue)
+                            .foregroundColor(Color.orange)
 
                         // Search Bar (Styled to match ResultsView)
                         HStack {

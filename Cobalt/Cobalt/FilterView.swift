@@ -49,7 +49,7 @@ struct FilterView: View {
                     filterSettings.endTime   = "11:30 PM"
                 }) {
                     Text("Clear All")
-                        .foregroundColor(.blue)
+                        .foregroundColor(.orange)
                 }
                 .padding(.trailing)
             }
@@ -76,6 +76,7 @@ struct FilterView: View {
                                     }
                                 }) {
                                     Image(systemName: filterSettings.selectedDays.contains(day) ? "checkmark.square" : "square")
+                                        .foregroundColor(.orange)
                                 }
                                 Text(day)
                                     .foregroundColor(.primary)
@@ -136,7 +137,7 @@ struct FilterView: View {
                     .fontWeight(.semibold)
                     .padding()
                     .frame(maxWidth: .infinity)
-                    .background(Color.blue)
+                    .background(Color.orange)
                     .foregroundColor(.white)
                     .cornerRadius(8)
                     .padding(.horizontal)

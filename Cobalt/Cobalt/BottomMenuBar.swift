@@ -30,10 +30,10 @@ struct BottomMenuBar: ViewModifier {
                 }) {
                     VStack {
                         Image(systemName: "house")
-                            .foregroundColor(selectedTab == .home ? .blue : .gray)
+                            .foregroundColor(selectedTab == .home ? .orange : .gray)
                         Text("Home")
                             .font(.caption)
-                            .foregroundColor(selectedTab == .home ? .blue : .gray)
+                            .foregroundColor(selectedTab == .home ? .orange : .gray)
                     }
                     .padding(.top, 8)
                 }
@@ -45,17 +45,17 @@ struct BottomMenuBar: ViewModifier {
                 }) {
                     VStack {
                         Image(systemName: "magnifyingglass")
-                            .foregroundColor(selectedTab == .search ? .blue : .gray)
+                            .foregroundColor(selectedTab == .search ? .orange : .gray)
                         Text("Search")
                             .font(.caption)
-                            .foregroundColor(selectedTab == .search ? .blue : .gray)
+                            .foregroundColor(selectedTab == .search ? .orange : .gray)
                     }
                     .padding(.top, 8)
                 }
                 .frame(maxWidth: .infinity)
             }
             .padding(.vertical, 8) // Reduce vertical padding to shorten the height
-            .background(Color.blue.opacity(0.1))
+            .background(Color.orange.opacity(0.1))
         }
     }
 }

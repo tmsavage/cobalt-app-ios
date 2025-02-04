@@ -24,9 +24,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		38DBD5922CF1767C00B33BAF /* Cobalt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cobalt.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		38DBD5A22CF1767F00B33BAF /* CobaltTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CobaltTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		38DBD5AC2CF1767F00B33BAF /* CobaltUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CobaltUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		38DBD5922CF1767C00B33BAF /* Casko.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Casko.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		38DBD5A22CF1767F00B33BAF /* CaskoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CaskoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		38DBD5AC2CF1767F00B33BAF /* CaskoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CaskoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -85,9 +85,9 @@
 		38DBD5932CF1767C00B33BAF /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				38DBD5922CF1767C00B33BAF /* Cobalt.app */,
-				38DBD5A22CF1767F00B33BAF /* CobaltTests.xctest */,
-				38DBD5AC2CF1767F00B33BAF /* CobaltUITests.xctest */,
+				38DBD5922CF1767C00B33BAF /* Casko.app */,
+				38DBD5A22CF1767F00B33BAF /* CaskoTests.xctest */,
+				38DBD5AC2CF1767F00B33BAF /* CaskoUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -95,9 +95,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		38DBD5912CF1767C00B33BAF /* Cobalt */ = {
+		38DBD5912CF1767C00B33BAF /* Casko */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 38DBD5B62CF1767F00B33BAF /* Build configuration list for PBXNativeTarget "Cobalt" */;
+			buildConfigurationList = 38DBD5B62CF1767F00B33BAF /* Build configuration list for PBXNativeTarget "Casko" */;
 			buildPhases = (
 				38DBD58E2CF1767C00B33BAF /* Sources */,
 				38DBD58F2CF1767C00B33BAF /* Frameworks */,
@@ -110,16 +110,16 @@
 			fileSystemSynchronizedGroups = (
 				38DBD5942CF1767C00B33BAF /* Cobalt */,
 			);
-			name = Cobalt;
+			name = Casko;
 			packageProductDependencies = (
 			);
 			productName = Cobalt;
-			productReference = 38DBD5922CF1767C00B33BAF /* Cobalt.app */;
+			productReference = 38DBD5922CF1767C00B33BAF /* Casko.app */;
 			productType = "com.apple.product-type.application";
 		};
-		38DBD5A12CF1767F00B33BAF /* CobaltTests */ = {
+		38DBD5A12CF1767F00B33BAF /* CaskoTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 38DBD5B92CF1767F00B33BAF /* Build configuration list for PBXNativeTarget "CobaltTests" */;
+			buildConfigurationList = 38DBD5B92CF1767F00B33BAF /* Build configuration list for PBXNativeTarget "CaskoTests" */;
 			buildPhases = (
 				38DBD59E2CF1767F00B33BAF /* Sources */,
 				38DBD59F2CF1767F00B33BAF /* Frameworks */,
@@ -133,16 +133,16 @@
 			fileSystemSynchronizedGroups = (
 				38DBD5A52CF1767F00B33BAF /* CobaltTests */,
 			);
-			name = CobaltTests;
+			name = CaskoTests;
 			packageProductDependencies = (
 			);
 			productName = CobaltTests;
-			productReference = 38DBD5A22CF1767F00B33BAF /* CobaltTests.xctest */;
+			productReference = 38DBD5A22CF1767F00B33BAF /* CaskoTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		38DBD5AB2CF1767F00B33BAF /* CobaltUITests */ = {
+		38DBD5AB2CF1767F00B33BAF /* CaskoUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 38DBD5BC2CF1767F00B33BAF /* Build configuration list for PBXNativeTarget "CobaltUITests" */;
+			buildConfigurationList = 38DBD5BC2CF1767F00B33BAF /* Build configuration list for PBXNativeTarget "CaskoUITests" */;
 			buildPhases = (
 				38DBD5A82CF1767F00B33BAF /* Sources */,
 				38DBD5A92CF1767F00B33BAF /* Frameworks */,
@@ -156,11 +156,11 @@
 			fileSystemSynchronizedGroups = (
 				38DBD5AF2CF1767F00B33BAF /* CobaltUITests */,
 			);
-			name = CobaltUITests;
+			name = CaskoUITests;
 			packageProductDependencies = (
 			);
 			productName = CobaltUITests;
-			productReference = 38DBD5AC2CF1767F00B33BAF /* CobaltUITests.xctest */;
+			productReference = 38DBD5AC2CF1767F00B33BAF /* CaskoUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -186,7 +186,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 38DBD58D2CF1767C00B33BAF /* Build configuration list for PBXProject "Cobalt" */;
+			buildConfigurationList = 38DBD58D2CF1767C00B33BAF /* Build configuration list for PBXProject "Casko" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -200,9 +200,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				38DBD5912CF1767C00B33BAF /* Cobalt */,
-				38DBD5A12CF1767F00B33BAF /* CobaltTests */,
-				38DBD5AB2CF1767F00B33BAF /* CobaltUITests */,
+				38DBD5912CF1767C00B33BAF /* Casko */,
+				38DBD5A12CF1767F00B33BAF /* CaskoTests */,
+				38DBD5AB2CF1767F00B33BAF /* CaskoUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -258,12 +258,12 @@
 /* Begin PBXTargetDependency section */
 		38DBD5A42CF1767F00B33BAF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 38DBD5912CF1767C00B33BAF /* Cobalt */;
+			target = 38DBD5912CF1767C00B33BAF /* Casko */;
 			targetProxy = 38DBD5A32CF1767F00B33BAF /* PBXContainerItemProxy */;
 		};
 		38DBD5AE2CF1767F00B33BAF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 38DBD5912CF1767C00B33BAF /* Cobalt */;
+			target = 38DBD5912CF1767C00B33BAF /* Casko */;
 			targetProxy = 38DBD5AD2CF1767F00B33BAF /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -399,6 +399,7 @@
 				DEVELOPMENT_TEAM = Y63JWH795U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Casko;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -409,7 +410,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.StackViewExercise.Cobalt;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Spigo.SpigoApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -428,6 +429,7 @@
 				DEVELOPMENT_TEAM = Y63JWH795U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Casko;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -438,7 +440,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.StackViewExercise.Cobalt;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Spigo.SpigoApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -460,7 +462,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cobalt.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Cobalt";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Casko.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Casko";
 			};
 			name = Debug;
 		};
@@ -478,7 +480,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cobalt.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Cobalt";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Casko.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Casko";
 			};
 			name = Release;
 		};
@@ -517,7 +519,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		38DBD58D2CF1767C00B33BAF /* Build configuration list for PBXProject "Cobalt" */ = {
+		38DBD58D2CF1767C00B33BAF /* Build configuration list for PBXProject "Casko" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				38DBD5B42CF1767F00B33BAF /* Debug */,
@@ -526,7 +528,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		38DBD5B62CF1767F00B33BAF /* Build configuration list for PBXNativeTarget "Cobalt" */ = {
+		38DBD5B62CF1767F00B33BAF /* Build configuration list for PBXNativeTarget "Casko" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				38DBD5B72CF1767F00B33BAF /* Debug */,
@@ -535,7 +537,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		38DBD5B92CF1767F00B33BAF /* Build configuration list for PBXNativeTarget "CobaltTests" */ = {
+		38DBD5B92CF1767F00B33BAF /* Build configuration list for PBXNativeTarget "CaskoTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				38DBD5BA2CF1767F00B33BAF /* Debug */,
@@ -544,7 +546,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		38DBD5BC2CF1767F00B33BAF /* Build configuration list for PBXNativeTarget "CobaltUITests" */ = {
+		38DBD5BC2CF1767F00B33BAF /* Build configuration list for PBXNativeTarget "CaskoUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				38DBD5BD2CF1767F00B33BAF /* Debug */,

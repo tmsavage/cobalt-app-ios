@@ -21,18 +21,18 @@ struct Restaurant: Identifiable, Decodable {
     let city: String
     let state: String
     let zip_code: String
+    let latitude: Double
+    let longitude: Double
     let description: String
     let features: String
-    let cobalt_apps: [HappyHour] // Match the key in the JSON response
+    let cobalt_apps: [HappyHour]
 
     var id: Int { restaurant_id }
 
-    // Add a computed property for the full address
     var fullAddress: String {
         "\(street_address), \(city), \(state) \(zip_code)"
     }
 
-    // Add a computed property or array for associated days
     var days: [String] {
         cobalt_apps.map { $0.day }
     }
@@ -44,11 +44,14 @@ struct Restaurant: Identifiable, Decodable {
         case city
         case state
         case zip_code
+        case latitude
+        case longitude
         case description
         case features
         case cobalt_apps
     }
 }
+
 
 struct HappyHour: Decodable {
     let day: String

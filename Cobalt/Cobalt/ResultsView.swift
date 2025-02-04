@@ -28,7 +28,7 @@ struct ResultsView: View {
                     selectedTab = .home // Explicitly switch to HomeView
                 }) {
                     Text("Cancel")
-                        .foregroundColor(.blue)
+                        .foregroundColor(.orange)
                 }
                 Spacer()
 
@@ -39,8 +39,8 @@ struct ResultsView: View {
                     Text(isMapView ? "List View" : "Map View")
                         .fontWeight(.bold)
                         .padding(8)
-                        .background(Color.blue.opacity(0.1))
-                        .foregroundColor(.blue)
+                        .background(Color.orange.opacity(0.1))
+                        .foregroundColor(.orange)
                         .cornerRadius(8)
                 }
             }
@@ -67,13 +67,14 @@ struct ResultsView: View {
                         .frame(width: 24, height: 24)
                         .padding(.vertical, 6)
                         .cornerRadius(8)
+                        .foregroundColor(.orange)
                 }
 
                 // Start Time Display
                 Text("Start: \(filterSettings.startTime)")
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 6)
-                    .background(Color.blue)
+                    .background(Color.orange)
                     .foregroundColor(.white)
                     .cornerRadius(25)
 
@@ -81,7 +82,7 @@ struct ResultsView: View {
                 Text("End: \(filterSettings.endTime)")
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 6)
-                    .background(Color.blue)
+                    .background(Color.orange)
                     .foregroundColor(.white)
                     .cornerRadius(25)
             }
@@ -90,10 +91,10 @@ struct ResultsView: View {
             Divider().padding(.vertical)
 
             // Results Header
-            Text("Results")
-                .font(.headline)
-                .padding(.horizontal, 16)
-                .frame(maxWidth: .infinity, alignment: .leading)
+//            Text("Results")
+//                .font(.headline)
+//                .padding(.horizontal, 16)
+//                .frame(maxWidth: .infinity, alignment: .leading)
 
             // Conditionally display Map or List
             if isMapView {
