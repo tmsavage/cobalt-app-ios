@@ -98,7 +98,7 @@ struct ResultsView: View {
 
             // Conditionally display Map or List
             if isMapView {
-                MapView(restaurants: filteredRestaurants)
+                MapView(restaurants: restaurants)
             } else {
                 if isLoading {
                     ProgressView("Loading...")
@@ -110,19 +110,19 @@ struct ResultsView: View {
                 } else {
                     ScrollView {
                         VStack(spacing: 16) {
-                            ForEach(filteredRestaurants) { restaurant in
+                            ForEach(restaurants) { restaurant in
                                 NavigationLink(
                                     destination: DetailView(
                                         restaurant: restaurant,
-                                        selectedTab: $selectedTab // Pass selectedTab to DetailView
+                                        selectedTab: $selectedTab
                                     )
                                 ) {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text(restaurant.name)
                                             .font(.headline)
                                             .foregroundColor(.primary)
-
-                                        Text(restaurant.fullAddress) // Updated to use fullAddress
+                                        
+                                        Text(restaurant.fullAddress) // Make sure Restaurant has a fullAddress property if needed
                                             .font(.subheadline)
                                             .foregroundColor(.gray)
                                     }
@@ -155,7 +155,18 @@ struct ResultsView: View {
         isLoading = true
         errorMessage = nil
 
-        guard let url = URL(string: "\(API.baseURL)/cobalt_api_handler") else {
+        // Construct the URL with query parameters.
+        let baseURL = "\(API.baseURL)/cobalt_api_handler"
+        var urlComponents = URLComponents(string: baseURL)!
+        urlComponents.queryItems = [
+            URLQueryItem(name: "searchQuery", value: searchQuery),
+            URLQueryItem(name: "locationQuery", value: locationQuery),
+            URLQueryItem(name: "selectedDays", value: filterSettings.selectedDays.joined(separator: ",")),
+            URLQueryItem(name: "startTime", value: filterSettings.startTime),
+            URLQueryItem(name: "endTime", value: filterSettings.endTime)
+        ]
+        
+        guard let url = urlComponents.url else {
             errorMessage = "Invalid API URL"
             isLoading = false
             return
@@ -171,40 +182,6 @@ struct ResultsView: View {
                     errorMessage = error.localizedDescription
                 }
             }
-        }
-    }
-
-    // Filter results dynamically based on search, location, and filter settings
-    var filteredRestaurants: [Restaurant] {
-        restaurants.filter { restaurant in
-            // Match search query
-            let matchesSearch = searchQuery.isEmpty ||
-                restaurant.name.lowercased().contains(searchQuery.lowercased())
-
-            // Match location query
-            let matchesLocation = locationQuery.isEmpty ||
-                restaurant.fullAddress.lowercased().contains(locationQuery.lowercased()) // Updated to fullAddress
-
-            // Match both selected days and time range
-            let matchesDayAndTime = restaurant.cobalt_apps.contains { happyHour in
-                // Check if the happy hour day matches the user's selected days
-                let matchesDay = filterSettings.selectedDays.isEmpty ||
-                    filterSettings.selectedDays.contains(happyHour.day)
-
-                // Check if the happy hour time matches the user's time range
-                let happyHourStart = convertTimeStringToHours(happyHour.start_time)
-                let happyHourEnd = convertTimeStringToHours(happyHour.end_time)
-                let userStart = convertTimeStringToHours(filterSettings.startTime)
-                let userEnd = convertTimeStringToHours(filterSettings.endTime)
-
-                let matchesTime = (userStart < happyHourEnd && userEnd > happyHourStart)
-
-                // Only return true if both day and time match
-                return matchesDay && matchesTime
-            }
-
-            // Combine all filters
-            return matchesSearch && matchesLocation && matchesDayAndTime
         }
     }
 
