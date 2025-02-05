@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject var filterSettings: FilterSettings
+//    @StateObject private var locationManager = LocationManager()
     @Binding var selectedTab: BottomMenuBar.Tab // Updated to match new logic
     @State private var showResults: Bool = false // Track ResultsView visibility
     @State private var searchQuery: String = ""
