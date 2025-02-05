@@ -3,6 +3,10 @@
 <plist version="1.0">
 <dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Your location is used to center the map on your current position.</string>
+	<string>&quot;Your location is used to center the map on your current position.&quot;</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict/>
+	</array>
 </dict>
 </plist>

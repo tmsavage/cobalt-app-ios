@@ -2,25 +2,33 @@ import SwiftUI
 import MapKit
 import CoreLocation
 
-/// High-level SwiftUI View that simply displays a map + user location.
+/// High-level SwiftUI View that displays a map + user location + triggers DetailView on pin tap.
 struct MapView: View {
-    /// Each MapView will manage its own instance of LocationManager.
     @StateObject private var locationManager = LocationManager()
-    
     let restaurants: [Restaurant]
+    
+    // Add a closure to notify the parent which restaurant was tapped
+    let didSelectRestaurant: (Restaurant) -> Void
     
     var body: some View {
         MapViewRepresentable(
             locationManager: locationManager,
             restaurants: restaurants
-        )
+        ) { tappedRestaurant in
+            didSelectRestaurant(tappedRestaurant)
+        }
     }
 }
+
+
 
 /// The UIViewRepresentable that wraps MKMapView
 struct MapViewRepresentable: UIViewRepresentable {
     @ObservedObject var locationManager: LocationManager
     let restaurants: [Restaurant]
+    
+    // Add a callback closure to notify SwiftUI when an annotation is tapped.
+    let onAnnotationTap: (Restaurant) -> Void
 
     func makeCoordinator() -> Coordinator {
         Coordinator(parent: self)
@@ -38,13 +46,12 @@ struct MapViewRepresentable: UIViewRepresentable {
         // 1) Collect all existing non-user annotations
         let existingAnnotations = mapView.annotations.filter { !($0 is MKUserLocation) }
 
-        // 2) Compare them to the new list. In a real app, you might compare IDs or do a deeper check.
-        //    Here, we’ll do a quick check by coordinate count. If they match exactly, no need to remove/re-add.
+        // 2) Compare count vs new restaurant list
         if existingAnnotations.count != restaurants.count {
-            // Remove previous (non-user) annotations
+            // Remove old
             mapView.removeAnnotations(existingAnnotations)
             
-            // Add restaurant annotations
+            // Add new
             let newAnnotations = restaurants.map { restaurant -> MKPointAnnotation in
                 let annotation = MKPointAnnotation()
                 annotation.title = restaurant.name
@@ -58,7 +65,7 @@ struct MapViewRepresentable: UIViewRepresentable {
             mapView.addAnnotations(newAnnotations)
         }
 
-        // 3) Keep your original “center once” logic unchanged
+        // 3) Only center once
         if !context.coordinator.hasSetInitialRegion {
             if let userLocation = locationManager.currentLocation {
                 let region = MKCoordinateRegion(
@@ -82,47 +89,78 @@ struct MapViewRepresentable: UIViewRepresentable {
         }
         
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-            if annotation is MKUserLocation {
-                return nil // Default blue-dot for user location
+            // Keep using the default user-location “blue dot”
+            guard !(annotation is MKUserLocation) else {
+                return nil
             }
-            // For restaurants, return nil for default pins (or customize if you like).
-            return nil
+            
+            let identifier = "RestaurantMarker"
+            
+            // Try to reuse an existing marker view, otherwise create a new one
+            let annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+                as? MKMarkerAnnotationView ?? MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            
+            // Always update the annotation reference
+            annotationView.annotation = annotation
+            
+            // Let the callout (bubble) show when tapped
+            annotationView.canShowCallout = true
+            
+            // Always set your glyph + color styling here
+            annotationView.glyphText = "🍸"
+            annotationView.markerTintColor = .orange
+            
+            return annotationView
+        }
+
+        
+        /// Called when the user taps on an annotation’s view (pin).
+        func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+            guard let annotation = view.annotation as? MKPointAnnotation else { return }
+            // find the matching Restaurant...
+            if let tappedRestaurant = parent.restaurants.first(where: {
+                $0.latitude == annotation.coordinate.latitude &&
+                $0.longitude == annotation.coordinate.longitude
+            }) {
+                parent.onAnnotationTap(tappedRestaurant)
+            }
         }
     }
 }
 
 
+
 // MARK: - Preview
-struct MapView_Previews: PreviewProvider {
-    static var previews: some View {
-        // A dummy list of restaurants for quick testing
-        MapView(restaurants: [
-            Restaurant(
-                restaurant_id: 1,
-                name: "The Local Bar",
-                street_address: "123 Main St",
-                city: "Cityville",
-                state: "NJ",
-                zip_code: "07704",
-                latitude: 40.7112,
-                longitude: -74.0093,
-                description: "A cozy bar with great drinks.",
-                features: "Live music, outdoor seating",
-                cobalt_apps: []
-            ),
-            Restaurant(
-                restaurant_id: 2,
-                name: "Happy Hour Central",
-                street_address: "456 Elm St",
-                city: "Townsville",
-                state: "NJ",
-                zip_code: "08012",
-                latitude: 40.7178,
-                longitude: -74.0036,
-                description: "Best happy hour deals in town.",
-                features: "Sports TV, late hours",
-                cobalt_apps: []
-            )
-        ])
-    }
-}
+//struct MapView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        // A dummy list of restaurants for quick testing
+//        MapView(restaurants: [
+//            Restaurant(
+//                restaurant_id: 1,
+//                name: "The Local Bar",
+//                street_address: "123 Main St",
+//                city: "Cityville",
+//                state: "NJ",
+//                zip_code: "07704",
+//                latitude: 40.7112,
+//                longitude: -74.0093,
+//                description: "A cozy bar with great drinks.",
+//                features: "Live music, outdoor seating",
+//                cobalt_apps: []
+//            ),
+//            Restaurant(
+//                restaurant_id: 2,
+//                name: "Happy Hour Central",
+//                street_address: "456 Elm St",
+//                city: "Townsville",
+//                state: "NJ",
+//                zip_code: "08012",
+//                latitude: 40.7178,
+//                longitude: -74.0036,
+//                description: "Best happy hour deals in town.",
+//                features: "Sports TV, late hours",
+//                cobalt_apps: []
+//            )
+//        ])
+//    }
+//}
